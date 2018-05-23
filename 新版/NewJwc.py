@@ -49,7 +49,7 @@ class CsuftJwc:
         Nsb_pw = body.find('div', attrs={'class': 'Nsb_pw'})
         Nsb_top = Nsb_pw.find('div', attrs={'class': 'Nsb_top'})
         Nsb_top_menu = Nsb_top.find('div', attrs={'class': 'Nsb_top_menu'})
-        text = (str(Nsb_top_menu.find('div', attrs={'class': 'Nsb_top_menu_nc'})).split("\">")[1][0:2])
+        text = (str(Nsb_top_menu.find('div', attrs={'class': 'Nsb_top_menu_nc'})).split("\">")[1].split("(")[0])
         self.student.name = text
         print("欢迎"+text+"同学!\n")
 
