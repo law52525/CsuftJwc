@@ -1,4 +1,5 @@
-from lxml import etree
+﻿from lxml import etree
+import warnings
 import requests
 import importlib
 from bs4 import BeautifulSoup
@@ -136,6 +137,7 @@ class CsuftJwc:
         print("历年成绩查询成功！")
 
 if __name__ == "__main__":
+    warnings.filterwarnings("ignore")
     user = input("学号：")     # 输入学号
     pwd = getpass("密码：")    # 隐式输入密码
     student = Student(user, pwd) # 参数 学号 密码
