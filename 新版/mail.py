@@ -5,9 +5,9 @@ from email.mime.application import MIMEApplication
 from email.header import Header
 from smtplib import *
 
-def SendEmail(message):
+def SendEmail(messages):
     # content为邮件正文内容，title为邮件标题
-    content = {'content': message, 'title': '爬虫'}
+    content = {'content': messages, 'title': '成绩单'}
     # qq邮箱smtp服务器
     host_server = 'smtp.qq.com'
     # sender_qq为发件人的qq号码
