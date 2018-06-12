@@ -26,6 +26,7 @@ class CsuftJwc:
         self.ip = ip
         self.urlhead = "http://"+self.ip
         self.login = self.urlhead + '/default2.aspx'
+        self.checkInfo = self.urlhead + '/xsgrxx.aspx?xh={username}&xm={name}&gnmkdm=N121501'
         self.checkNo = self.urlhead + '/xs_main.aspx?xh={username}'
         self.checkTimetable = self.urlhead + '/xskbcx.aspx?xh={username}&xm={name}&gnmkdm=N121603'
         self.checkScore = self.urlhead + '/xscjcx.aspx?xh={username}&xm={name}&gnmkdm=N121618'
@@ -106,6 +107,26 @@ class CsuftJwc:
             f.write(str(html))
         print("课表查询成功！")
 
+    # 个人信息
+    def getInfo(self):
+        info = self.checkInfo.format(username=self.student.number, name=self.student.name)
+        headers = self.session.headers
+        headers['referer'] = info
+        Response = self.session.post(info, headers=headers)
+        html = Response.content.decode("gb2312")
+        with open('./html/Info.html', 'w') as f:
+            f.write(str(html))
+        print("个人信息查询成功！")
+        html = etree.HTML(html)
+        idcard = html.xpath("//table[@class='formlist']/tr[11]/td[4]/span/text()")
+        highschool = html.xpath("//table[@class='formlist']/tr[5]/td[4]/span/text()")
+        try:
+            print("身份证号："+idcard[0])
+            print("毕业中学："+highschool[0])
+        except IndexError as e:
+            print(e)
+
+
     # 查所有成绩
     def getReport(self):
         referer = self.checkNo
@@ -143,6 +164,7 @@ if __name__ == "__main__":
     student = Student(user, pwd) # 参数 学号 密码
     spider = CsuftJwc(student, ip="210.43.247.44")  # 实例化爬虫
     spider.Login()
+    spider.getInfo()
     spider.getReport()
     spider.getTimetable()
     spider.getLevel()
