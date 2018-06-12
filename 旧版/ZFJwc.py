@@ -10,7 +10,10 @@ from getpass import getpass
 def getInfor(response, xpath):
     content = response.content.decode('gb2312')  # 网页源码是gb2312要先解码
     selector = etree.HTML(content)
-    infor = selector.xpath(xpath)[0]
+    try:
+        infor = selector.xpath(xpath)[0]
+    except IndexError as e:
+        return []
     return infor
 
 class Student:
@@ -24,6 +27,7 @@ class CsuftJwc:
         importlib.reload(sys)
         #初始参数
         self.ip = ip
+        self.yes = True
         self.urlhead = "http://"+self.ip
         self.login = self.urlhead + '/default2.aspx'
         self.checkInfo = self.urlhead + '/xsgrxx.aspx?xh={username}&xm={name}&gnmkdm=N121501'
@@ -45,12 +49,19 @@ class CsuftJwc:
         with open('1.png', 'wb') as f:
             f.write(pic)
 
+    def Yes(self):
+        return self.yes
+
     def getName(self, response):
         #获取学生基本信息
         text = getInfor(response,'//*[@id="xhxm"]/text()')
-        text = text.replace(" ","")
-        self.student.name = str(text.replace("同学","").encode("gb2312"))
-        print("欢迎"+text+"!")
+        if text:
+            text = text.replace(" ","")
+            self.student.name = str(text.replace("同学","").encode("gb2312"))
+            print("欢迎"+text+"!")
+        else:
+            self.yes = False
+            print("密码错误！")
 
     def Login(self):
         #访问教务系统
@@ -164,7 +175,8 @@ if __name__ == "__main__":
     student = Student(user, pwd) # 参数 学号 密码
     spider = CsuftJwc(student, ip="210.43.247.44")  # 实例化爬虫
     spider.Login()
-    spider.getInfo()
-    spider.getReport()
-    spider.getTimetable()
-    spider.getLevel()
+    if spider.Yes():
+        spider.getInfo()
+        spider.getReport()
+        spider.getTimetable()
+        spider.getLevel()
